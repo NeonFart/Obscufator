@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUA SHIELD | Obfuscator Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --accent: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --text: #c9d1d9;
+            --border: #30363d;
+            --success: #238636;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        h1 span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+
+        p { color: #8b949e; margin-top: 5px; }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .editor-container { grid-template-columns: 1fr; }
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        textarea {
+            width: 100%;
+            height: 450px;
+            background: #090c10;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #58a6ff;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .btn-copy {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--accent-glow);
+        }
+
+        .btn-copy:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .btn:active { transform: translateY(0); }
+
+        .status-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .loader {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #statusText { font-size: 0.9rem; color: #8b949e; }
+
+        .success-msg { color: #3fb950 !important; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LUA<span>SHIELD</span></h1>
+        <p>Obfuscateur haute performance pour scripts Roblox</p>
+    </header>
+
+    <div class="container">
+        <div class="editor-container">
+            <div>
+                <div class="box-header">
+                    <label>Source Lua</label>
+                </div>
+                <textarea id="inputCode" placeholder="-- Collez votre script ici...&#10;print('Hello Roblox!')"></textarea>
+            </div>
+            <div>
+                <div class="box-header">
+                    <label>Code Obfusqué</label>
+                </div>
+                <textarea id="outputCode" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="status-area">
+                <div id="loader" class="loader"></div>
+                <span id="statusText">Système prêt</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-copy" onclick="copyToClipboard()">Copier</button>
+                <button class="btn" onclick="obfuscate()">Obfusquer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function obfuscate() {
+            const input = document.getElementById('inputCode').value;
+            const output = document.getElementById('outputCode');
+            const loader = document.getElementById('loader');
+            const status = document.getElementById('statusText');
+
+            if (!input.trim()) {
+                status.innerText = "⚠️ Erreur: Aucun code détecté";
+                return;
+            }
+
+            // Animation
+            loader.style.display = "block";
+            status.innerText = "Encodage du Bytecode...";
+            status.classList.remove('success-msg');
+            output.value = "";
+
+            setTimeout(() => {
+                try {
+                    // Logique d'obfuscation réelle pour Roblox
+                    const key = Math.floor(Math.random() * 50) + 10;
+                    const encoded = input.split('').map(char => {
+                        return char.charCodeAt(0) + key;
+                    }).join(',');
+
+                    // Wrapper Roblox (Loadstring)
+                    const protectedScript = `--[[ OBFUSQUÉ PAR LUA SHIELD ]]--
+local _sh = {${encoded}}
+local _res = ""
+for i=1, #_sh do
+    _res = _res .. string.char(_sh[i] - ${key})
+end
+local _exec = loadstring(_res)
+_exec()`;
+
+                    output.value = protectedScript;
+                    status.innerText = "✅ Obfuscation terminée !";
+                    status.classList.add('success-msg');
+                } catch (err) {
+                    status.innerText = "❌ Erreur critique lors du traitement";
+                } finally {
+                    loader.style.display = "none";
+                }
+            }, 1000);
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('outputCode');
+            const status = document.getElementById('statusText');
+
+            if (!output.value) return;
+
+            output.select();
+            document.execCommand('copy');
+            
+            const originalText = status.innerText;
+            status.innerText = "📋 Copié dans le presse-papier !";
+            setTimeout(() => {
+                status.innerText = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
+
