@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUA SHIELD | Pro Obfuscator</title>
+    <title>NeonObscufator | Pro Obfuscator</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d1117">
@@ -109,7 +109,7 @@
 <body>
 
     <header>
-        <h1>LUA<span>SHIELD</span></h1>
+        <h1>Neon<span>Obscufator</span></h1>
         <p>Professional Roblox Obfuscator</p>
     </header>
 
@@ -157,7 +157,7 @@
                 const key = Math.floor(Math.random() * 40) + 10;
                 const encoded = input.split('').map(c => c.charCodeAt(0) + key).join(',');
                 
-                output.value = `--[[ OBFUSCATED BY LUA SHIELD ]]--\nlocal _s = {${encoded}}\nlocal _r = ""\nfor i=1, #_s do _r = _r .. string.char(_s[i] - ${key}) end\nlocal _e = loadstring(_r)\n_e()`;
+                output.value = `--[[ OBFUSCATED BY NeonObscufator ]]--\nlocal _s = {${encoded}}\nlocal _r = ""\nfor i=1, #_s do _r = _r .. string.char(_s[i] - ${key}) end\nlocal _e = loadstring(_r)\n_e()`;
                 
                 loader.style.display = "none";
                 status.innerText = "✅ Success!";
