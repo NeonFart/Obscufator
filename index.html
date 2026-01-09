@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeonObscufator | Obfuscator Pro</title>
+    <title>LUA SHIELD | Pro Obfuscator</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -169,8 +169,8 @@
 <body>
 
     <header>
-        <h1>Neon<span>Obscufator</span></h1>
-        <p>Obfuscateur haute performance pour scripts Roblox</p>
+        <h1>LUA<span>SHIELD</span></h1>
+        <p>High-performance Roblox script protection</p>
     </header>
 
     <div class="container">
@@ -179,24 +179,24 @@
                 <div class="box-header">
                     <label>Source Lua</label>
                 </div>
-                <textarea id="inputCode" placeholder="-- Collez votre script ici...&#10;print('Hello Roblox!')"></textarea>
+                <textarea id="inputCode" placeholder="-- Paste your script here...&#10;print('Hello Roblox!')"></textarea>
             </div>
             <div>
                 <div class="box-header">
-                    <label>Code Obfusqué</label>
+                    <label>Obfuscated Code</label>
                 </div>
-                <textarea id="outputCode" readonly placeholder="Le résultat apparaîtra ici..."></textarea>
+                <textarea id="outputCode" readonly placeholder="The result will appear here..."></textarea>
             </div>
         </div>
 
         <div class="controls">
             <div class="status-area">
                 <div id="loader" class="loader"></div>
-                <span id="statusText">Système prêt</span>
+                <span id="statusText">System Ready</span>
             </div>
             <div class="btn-group">
-                <button class="btn btn-copy" onclick="copyToClipboard()">Copier</button>
-                <button class="btn" onclick="obfuscate()">Obfusquer</button>
+                <button class="btn btn-copy" onclick="copyToClipboard()">Copy Code</button>
+                <button class="btn" onclick="obfuscate()">Obfuscate</button>
             </div>
         </div>
     </div>
@@ -209,26 +209,26 @@
             const status = document.getElementById('statusText');
 
             if (!input.trim()) {
-                status.innerText = "⚠️ Erreur: Aucun code détecté";
+                status.innerText = "⚠️ Error: No code detected";
                 return;
             }
 
-            // Animation
+            // UI Animation
             loader.style.display = "block";
-            status.innerText = "Encodage du Bytecode...";
+            status.innerText = "Encoding Bytecode...";
             status.classList.remove('success-msg');
             output.value = "";
 
             setTimeout(() => {
                 try {
-                    // Logique d'obfuscation réelle pour Roblox
+                    // Actual Obfuscation Logic for Roblox
                     const key = Math.floor(Math.random() * 50) + 10;
                     const encoded = input.split('').map(char => {
                         return char.charCodeAt(0) + key;
                     }).join(',');
 
-                    // Wrapper Roblox (Loadstring)
-                    const protectedScript = `--[[ OBFUSQUÉ PAR LUA SHIELD ]]--
+                    // Roblox Execution Wrapper (Loadstring)
+                    const protectedScript = `--[[ OBFUSCATED BY LUA SHIELD ]]--
 local _sh = {${encoded}}
 local _res = ""
 for i=1, #_sh do
@@ -238,10 +238,10 @@ local _exec = loadstring(_res)
 _exec()`;
 
                     output.value = protectedScript;
-                    status.innerText = "✅ Obfuscation terminée !";
+                    status.innerText = "✅ Obfuscation Complete!";
                     status.classList.add('success-msg');
                 } catch (err) {
-                    status.innerText = "❌ Erreur critique lors du traitement";
+                    status.innerText = "❌ Critical error during processing";
                 } finally {
                     loader.style.display = "none";
                 }
@@ -258,12 +258,12 @@ _exec()`;
             document.execCommand('copy');
             
             const originalText = status.innerText;
-            status.innerText = "📋 Copié dans le presse-papier !";
+            status.innerText = "📋 Copied to clipboard!";
             setTimeout(() => {
                 status.innerText = originalText;
             }, 2000);
         }
     </script>
 </body>
-</html>
-
+        </html>
+        
